@@ -26,6 +26,22 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # {'izdere', 'debel', 'oddide', 'začudeno'}
 ###############################################################################
 
+import re
+
+
+def find_words(text, podniz):
+    niz = set()
+    vzorec = r'\w+\b'
+    for ujemanje in re.finditer(vzorec, text):
+        tekst = ujemanje.group(0)
+        if podniz in tekst:
+            niz.add(tekst)
+    return niz
+
+
+
+
+
 
 ###############################################################################
 # 2) Sestavite funkcijo [find_prefix], ki vrne množico vseh besed, ki se
@@ -34,6 +50,16 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # >>> find_prefix(test_text, 'zi')
 # {'zibala', 'zibel', 'zibelko'}
 ###############################################################################
+
+def find_prefix(niz, podniz):
+    mnozica = set()
+    dolz = len(podniz)
+    vzorec = r'\w+\b'
+    for ujemanje in re.finditer(vzorec, niz):
+        tekst = ujemanje.group(0)
+        if podniz == tekst[dolz]:
+            mnozica.add(tekst)
+    return mnozica
 
 
 ###############################################################################
@@ -52,3 +78,11 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # >>> double_letters('A volunteer is worth twenty pressed men.')
 # {'volunteer', 'pressed'}
 ###############################################################################
+
+def double_letters(niz):
+    mnoz = set()
+    vzorec = r'\w*(\w)\1\w*\b'
+    for ujemanje in re.finditer(vzorec, niz):
+        tekst = ujemanje.group(0)
+        mnoz.add(tekst)
+    return mnoz
