@@ -55,11 +55,15 @@ def find_prefix(niz, podniz):
     mnozica = set()
     dolz = len(podniz)
     vzorec = r'\w+\b'
+    print('ha')
     for ujemanje in re.finditer(vzorec, niz):
         tekst = ujemanje.group(0)
-        if len(tekst) > dolz:
-            if podniz == tekst[dolz]:
+        print(tekst[:dolz])
+        if len(tekst) >= dolz:
+            if podniz == tekst[:dolz]
                 mnozica.add(tekst)
+                print('ha')
+    print('ha')
     return mnozica
 
 
@@ -71,6 +75,14 @@ def find_prefix(niz, podniz):
 # {'zibala', 'razveselila', 'prestrašila', 'šivala', 'opazila', 'tla'}
 ###############################################################################
 
+def find_suffix(text, podniz):
+    vzorec = re.compile(r'\w+\b')
+    dolz = len(podniz)
+    mn = set()
+    for ujemanje in vzorec.finditer(text):
+        if ujemanje.group()[-dolz:] == podniz:
+            mn.add(ujemanje.group())
+    return mn
 
 ###############################################################################
 # 4) Sestavite funkcijo [double_letters], ki sprejme niz in vrne množico vseh
