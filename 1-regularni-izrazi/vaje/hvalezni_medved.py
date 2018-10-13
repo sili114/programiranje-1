@@ -57,8 +57,9 @@ def find_prefix(niz, podniz):
     vzorec = r'\w+\b'
     for ujemanje in re.finditer(vzorec, niz):
         tekst = ujemanje.group(0)
-        if podniz == tekst[dolz]:
-            mnozica.add(tekst)
+        if len(tekst) > dolz:
+            if podniz == tekst[dolz]:
+                mnozica.add(tekst)
     return mnozica
 
 
