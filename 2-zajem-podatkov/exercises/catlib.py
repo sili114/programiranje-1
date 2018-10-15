@@ -9,28 +9,30 @@ import csv
 ###############################################################################
 
 # define the URL of the main page of the bolha cats listing
-cats_frontpage_url = 'TODO'
+cats_frontpage_url = 'http://www.bolha.com/zivali/male-zivali/macke/'
 # the directory to which we save our data
-cat_directory = 'TODO'
+cat_directory = 'cat_data'
 # the filename we use to save the frontpage
-frontpage_filename = 'TODO'
+frontpage_filename = 'frontpage.html'
 # the filename for the CSV file for the extracted data
-csv_filename = 'TODO'
+csv_filename = 'catdata.csv'
 
 
-def download_url_to_string(TODO):
+def download_url_to_string(url):
     '''This function takes a URL as argument and tries to download it
     using requests. Upon success, it returns the page contents as string.'''
     try:
+        r = requests.get(url)
         # some code here that may raise an exception
-        return TODO
+    except requests.exceptions.ConnectionError:
+        print('stran ne obstaja!')
+        return ''
         # some more code that won't be run if the exception occured
-    except 'TODO':
         # some error handling / recovery code here
         # we may just display an informative message and quit
-        return TODO
+        
     # continue with the non-exceptional code
-    return TODO
+    return r.text
 
 
 def save_string_to_file(text, directory, filename):
@@ -46,10 +48,14 @@ def save_string_to_file(text, directory, filename):
 # Define a function that downloads the frontpage and saves it to a file.
 
 
-def save_frontpage(TODO):
+def save_frontpage(page_url, directory, filename):
+    text = download_url_to_string(page_url)
+    save_string_to_file(text, directory, filename)
+    return None
+
+
     '''Save "cats_frontpage_url" to the file
     "cat_directory"/"frontpage_filename"'''
-    return TODO
 
 ###############################################################################
 # Now that we have some data, we can think about processing it.
@@ -58,9 +64,9 @@ def save_frontpage(TODO):
 
 def read_file_to_string(directory, filename):
     '''Return the contents of the file "directory"/"filename" as a string.'''
-    path = os.path.join(TODO)
+    path = os.path.join(directory, filename)
     with open(path, 'r') as file_in:
-        return TODO
+        return file_in.read()
 
 # Define a function that takes a webpage as a string and splits it into
 # segments such that each segment corresponds to one advertisement. This
@@ -70,16 +76,38 @@ def read_file_to_string(directory, filename):
 # functionality.
 
 
-def page_to_ads(TODO):
+def page_to_ads(direct, filename):
+    addlist = []
+    regex = (
+            r'<div class="ad">.*?'
+            r'<div class="clear"></div>'
+            )
+    text = read_file_to_string(direct, filename)
+    izraz = re.compile(regex, re.DOTALL)
+    for ujemanje in izraz.finditer(text):
+        addlist.append(ujemanje.group(0))
+    return addlist
+
+'
     '''Split "page" to a list of advertisement blocks.'''
-    return TODO
+    
 
 # Define a function that takes a string corresponding to the block of one
 # advertisement and extracts from it the following data: Name, price, and
 # the description as displayed on the page.
 
 
-def get_dict_from_ad_block(TODO):
+def get_dict_from_ad_block(block_string):
+    vzorec = re.compile(
+    r'(<h3><a title=(?P<name>.*?)href'
+    r'</h3>(?P<description>.*?)<div'
+    r'<div class="price"><span>(?P<price>.*?)</span>',
+    re.DOTALL
+    )
+    for ujemanje in vzorec.finditer(block_string):
+        
+
+
     '''Build a dictionary containing the name, description and price
     of an ad block.'''
     return TODO
