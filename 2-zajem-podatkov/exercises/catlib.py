@@ -107,21 +107,27 @@ def get_dict_from_ad_block(block_string):
     dicti = {}
     for ujemanje in vzorec.finditer(block_string):
         a, b , c = ujemanje.group(name), ujemanje.group(description), ujemanje.group(price)
-        dicti[block_string] = (a, b, c)
+        dicti[name] = a
+        dicti[description] = b
+        dicti[price] =  c
     return dicti
         
 
 
-    '''Build a dictionary containing the name, description and price
-    of an ad block.'''
+   
 
 # Write a function that reads a page from a file and returns the list of
 # dictionaries containing the information for each ad on that page.
 
 
-def ads_from_file(TODO):
+def ads_from_file(direct, filename):
+    sez = page_to_ads(direct, filename)
+    sez2 = []
+    for block in sez:
+        c = get_dict_from_ad_block(block)
+        sez2.append(c)
     '''Parse the ads in filename/directory into a dictionary list.'''
-    return TODO
+    return sez2
 
 ###############################################################################
 # We processed the data, now let's save it for later.
@@ -146,6 +152,6 @@ def write_csv(fieldnames, rows, directory, filename):
 # the dictionary.
 
 
-def write_cat_ads_to_csv(TODO):
+def write_cat_ads_to_csv(direct, filename, ):
     '''Write a CSV file containing one ad from "ads" on each row.'''
     return TODO
