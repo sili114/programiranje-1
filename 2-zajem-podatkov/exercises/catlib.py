@@ -99,18 +99,21 @@ def page_to_ads(direct, filename):
 
 def get_dict_from_ad_block(block_string):
     vzorec = re.compile(
-    r'(<h3><a title=(?P<name>.*?)href'
-    r'</h3>(?P<description>.*?)<div'
-    r'<div class="price"><span>(?P<price>.*?)</span>',
+    r'(<h3><a title=(?P<name>.*?)href.*?'
+    r'</h3>\s*(?P<description>.*?)<div.*?'
+    r'<div class="price">.*?(?P<price>\w.*?)</',
     re.DOTALL
     )
+    dicti = {}
     for ujemanje in vzorec.finditer(block_string):
+        a, b , c = ujemanje.group(name), ujemanje.group(description), ujemanje.group(price)
+        dicti[block_string] = (a, b, c)
+    return dicti
         
 
 
     '''Build a dictionary containing the name, description and price
     of an ad block.'''
-    return TODO
 
 # Write a function that reads a page from a file and returns the list of
 # dictionaries containing the information for each ad on that page.
