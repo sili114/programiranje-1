@@ -88,7 +88,7 @@ def page_to_ads(direct, filename):
         addlist.append(ujemanje.group(0))
     return addlist
 
-'
+
     '''Split "page" to a list of advertisement blocks.'''
     
 
@@ -109,7 +109,7 @@ def get_dict_from_ad_block(block_string):
         a, b , c = ujemanje.group(name), ujemanje.group(description), ujemanje.group(price)
         dicti[name] = a
         dicti[description] = b
-        dicti[price] =  c
+        dicti[price] = c
     return dicti
         
 
