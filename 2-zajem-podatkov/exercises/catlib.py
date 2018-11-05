@@ -100,16 +100,14 @@ def page_to_ads(direct, filename):
 def get_dict_from_ad_block(block_string):
     vzorec = re.compile(
     r'(<h3><a title=(?P<name>.*?)href.*?'
-    r'</h3>\s*(?P<description>.*?)<div.*?'
-    r'<div class="price">.*?(?P<price>\w.*?)</',
+    r'</h3>\s*(?P<description>.*?)<div.*?',
     re.DOTALL
     )
     dicti = {}
     for ujemanje in vzorec.finditer(block_string):
-        a, b , c = ujemanje.group(name), ujemanje.group(description), ujemanje.group(price)
+        a, b , c = ujemanje.group(name), ujemanje.group(description)
         dicti[name] = a
         dicti[description] = b
-        dicti[price] = c
     return dicti
         
 
@@ -152,6 +150,14 @@ def write_csv(fieldnames, rows, directory, filename):
 # the dictionary.
 
 
-def write_cat_ads_to_csv(direct, filename, ):
+def write_cat_ads_to_csv(direct, filename, dictlist):
+    os.makedirs(directory, exist_ok=True)
+    path = os.path.join(directory, filename)
+    with open(path, 'w') as csv_file:
+        writer = csv.DictWriter(csv_file)
+        for row in dictlist:
+            writer.writerow(row)
     '''Write a CSV file containing one ad from "ads" on each row.'''
-    return TODO
+    return None
+
+write_cat_ads_to_csv(cat_directory, csv_filename, )
