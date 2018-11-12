@@ -90,8 +90,9 @@ let rec delete k list =
 
 let rec slice list i k =
   match list, i, k with
-  | list, i, k when i = k -> delete k list
-  | list, i, k when i < k -> 
+  | list, i, k when i > k -> list
+  | [], i, k -> []
+  | x :: xs , i , k when i > 0 | i <= k -> x :: slice xs (i - 1) k
 
 (*----------------------------------------------------------------------------*]
  Funkcija [insert x k list] na [k]-to mesto seznama [list] vrine element [x].
