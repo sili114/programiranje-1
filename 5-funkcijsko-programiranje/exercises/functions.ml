@@ -206,7 +206,10 @@ let rec apply_sequence f x n =
  - : int list = [4; 5]
 [*----------------------------------------------------------------------------*)
 
-let rec filter = ()
+
+let rec filter f  = function
+  | [] -> []
+  | x :: xs -> if f x = true then x :: filter f xs else filter f xs
 
 (*----------------------------------------------------------------------------*]
  The function [exists] accepts a list and a function and returns [true] if
@@ -220,7 +223,9 @@ let rec filter = ()
  - : bool = false
 [*----------------------------------------------------------------------------*)
 
-let rec exists = ()
+let rec exists f  = function
+  | [] -> false
+  | x :: xs -> if f x = true then true else exists f xs
 
 (*----------------------------------------------------------------------------*]
  The function [first f default list] returns the first element of the list for
@@ -234,4 +239,6 @@ let rec exists = ()
  - : int = 0
 [*----------------------------------------------------------------------------*)
 
-let rec first = ()
+let rec first f a = function
+| [] -> a
+| x :: xs -> if f x = true then x else first f a xs
