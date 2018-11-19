@@ -1,5 +1,23 @@
 (* ========== Exercise 3: Types  ========== *)
 
+type option = None | Some of int
+
+type 'a option = None | Some of 'a 
+type color = 
+      | Red
+      | Blue
+      | Yellow
+      | RGB of int * int * int 
+
+type 'a list = 
+      | Empty
+      | Cons of 'a * 'a list
+
+type 'a tree =
+      | Empty
+      | Node of 'a * 'a tree * 'a tree 
+
+
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  When modeling money, we usually use floats. However we quickly run into
  problems when currency is introduced.
@@ -19,9 +37,15 @@
  # dollar_to_euro (Dollar 0.5);;
  - : euro = Euro 0.4305
 [*----------------------------------------------------------------------------*)
+type euro = Euro of float
+type dollar = Dollar of float
 
-
-
+let dollar_to_euro dollar =
+      match dollar with 
+      | Dollar v -> Euro(0.2 *. v)
+      
+(* let Dollar v = dollar in ...  
+let d_to_e (Dollar v) = ...*)
 (*----------------------------------------------------------------------------*]
  Define the type [currency] as a single variant type with constructors for the
  currencies yen, pound and krona. Then define the function [to_pound], which
@@ -34,7 +58,16 @@
  - : currency = Pound 0.007
 [*----------------------------------------------------------------------------*)
 
+type currency =
+      | Yen of float
+      | Pound of float
+      | Krona of float
 
+let to_pound c = 
+      match c with
+      | Yen v -> Pound(1. *. v)
+      | Pound v -> Pound v
+      | Krona v -> Pound 0.
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  We wish to use lists that keep integers as well as booleans. This can be
@@ -55,6 +88,11 @@
  Define an example, which represents "[5; true; false; 7]".
 [*----------------------------------------------------------------------------*)
 
+type intbool_list =
+      | Empty
+      | Int_value of int * intbool_list 
+      | Bool_value of bool * intbool_list
+
 
 
 (*----------------------------------------------------------------------------*]
@@ -63,15 +101,29 @@
  [f_bool].
 [*----------------------------------------------------------------------------*)
 
-let rec intbool_map = ()
+let rec intbool_map f_int f_bool = function
+| Empty -> Empty
+| Int_value (v, listt) -> Int_value (f_int v, intbool_map f_int f_bool listt)
+| Bool_value (v, listt) -> Bool_value (f_bool v, intbool_map f_int f_bool listt)
 
 (*----------------------------------------------------------------------------*]
  The function [intbool_reverse] reverses the order of elements of an
  [intbool_list]. The function is tail-recursive.
 [*----------------------------------------------------------------------------*)
 
-let rec intbool_reverse = ()
 
+
+
+let rec intbool_reverse intb =
+      let rec intshit' acc = function
+      | Empty -> acc
+      | Int_value (x, xs) -> 
+            let new_acc = Int_value(x, acc) in
+             intshit' new_acc xs 
+      | Bool_value (x, xs) -> 
+            let new_acc = Bool_value(x, acc) in
+            intshit' new_acc xs
+      in intshit' Empty intb
 (*----------------------------------------------------------------------------*]
  The function [intbool_separate ib_list] separates the values of [ib_list] into
  a pair of regular [list] lists, where the first one includes all integers and
@@ -79,7 +131,12 @@ let rec intbool_reverse = ()
  change the order of elements.
 [*----------------------------------------------------------------------------*)
 
-let rec intbool_separate = ()
+let rec intbool_separate ib_list = 
+      let rec tail' acc1 acc2 = function
+      | Empty -> (acc1, acc2)
+      | Int_value (x, xs) -> tail' (acc1 @ [x]) acc2 xs
+      | Bool_value (x, xs) -> tail' acc1 (acc2 @ [x]) xs
+      in tail' [] [] ib_list
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  You were chosen to be the database administrator for a world renowned wizard
@@ -94,7 +151,15 @@ let rec intbool_separate = ()
  After being employed, a wizard can decide to be a historian, a teacher or
  a researcher. Define the type [specialisation] that represents those choices.
 [*----------------------------------------------------------------------------*)
+type magic =
+      | fire
+      | frost
+      | arcane
 
+type specialisation =
+      | historian
+      | teacher
+      | researcher
 
 
 (*----------------------------------------------------------------------------*]
@@ -112,7 +177,10 @@ let rec intbool_separate = ()
  - : wizard = {name = "Matija"; status = Employed (Fire, Teacher)}
 [*----------------------------------------------------------------------------*)
 
-
+type status =
+      | newbie
+      | student of magic * int 
+      | employee of magic * specialisation
 
 (*----------------------------------------------------------------------------*]
  We want to count how many users of a certain school of magic are currently in
@@ -126,6 +194,9 @@ let rec intbool_separate = ()
  - : magic_counter = {fire = 1; frost = 1; arcane = 2}
 [*----------------------------------------------------------------------------*)
 
+type magic_counter =
+      | fire_count of int
+      | 
 
 
 (*----------------------------------------------------------------------------*]

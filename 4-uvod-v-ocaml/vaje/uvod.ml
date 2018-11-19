@@ -88,11 +88,7 @@ let rec delete k list =
  - : int list = [1; 2; 3]
 [*----------------------------------------------------------------------------*)
 
-let rec slice list i k =
-  match list, i, k with
-  | list, i, k when i > k -> list
-  | [], i, k -> []
-  | x :: xs , i , k when i > 0 | i <= k -> x :: slice xs (i - 1) k
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [insert x k list] na [k]-to mesto seznama [list] vrine element [x].
@@ -114,7 +110,7 @@ let rec insert = ()
  - : int list = [3; 4; 5; 1; 2]
 [*----------------------------------------------------------------------------*)
 
-let rec rotate = ()
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [remove x list] iz seznama izbriše vse pojavitve elementa [x].
@@ -134,8 +130,16 @@ let rec remove = ()
  # is_palindrome [0; 0; 1; 0];;
  - : bool = false
 [*----------------------------------------------------------------------------*)
-
-let rec is_palindrome = ()
+let rec reverse list =
+  let rec reverse' acc = function
+  | [] -> acc
+  | x :: xs -> reverse' x :: acc xs
+  
+let rec is_palindrome list =
+  if list = reverse list then
+   true
+  else
+   false
 
 (*----------------------------------------------------------------------------*]
  Funkcija [max_on_components] sprejme dva seznama in vrne nov seznam, katerega
