@@ -151,16 +151,16 @@ let rec intbool_separate ib_list =
  After being employed, a wizard can decide to be a historian, a teacher or
  a researcher. Define the type [specialisation] that represents those choices.
 [*----------------------------------------------------------------------------*)
+
 type magic =
-      | fire
-      | frost
-      | arcane
+      | Fire
+      | Frost
+      | Arcane
 
 type specialisation =
-      | historian
-      | teacher
-      | researcher
-
+      | Historian
+      | Teacher
+      | Researcher
 
 (*----------------------------------------------------------------------------*]
  Every wizard starts out as a newbie. Afterwards they become a student and in
@@ -178,9 +178,12 @@ type specialisation =
 [*----------------------------------------------------------------------------*)
 
 type status =
-      | newbie
-      | student of magic * int 
-      | employee of magic * specialisation
+      | Newbie
+      | Student of magic * int 
+      | Employee of magic * specialisation
+
+type wizard = {name: string ; status: status}
+
 
 (*----------------------------------------------------------------------------*]
  We want to count how many users of a certain school of magic are currently in
@@ -194,9 +197,12 @@ type status =
  - : magic_counter = {fire = 1; frost = 1; arcane = 2}
 [*----------------------------------------------------------------------------*)
 
-type magic_counter =
-      | fire_count of int
-      | 
+type magic_counter = {fire: int; frost: int; arcane: int}
+
+let rec update counter = function
+| Fire -> {counter with fire = counter.fire + 1}
+| Frost -> {counter with frost = counter.frost + 1}
+| Arcane -> {counter with arcane = counter.arcane + 1}
 
 
 (*----------------------------------------------------------------------------*]
@@ -207,7 +213,8 @@ type magic_counter =
  - : magic_counter = {fire = 3; frost = 0; arcane = 0}
 [*----------------------------------------------------------------------------*)
 
-let rec count_magic = ()
+let rec count_magic = function
+| 
 
 (*----------------------------------------------------------------------------*]
  We wish to find a possible candidate for a job offer. A student can become a
