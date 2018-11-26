@@ -197,12 +197,12 @@ type wizard = {name: string ; status: status}
  - : magic_counter = {fire = 1; frost = 1; arcane = 2}
 [*----------------------------------------------------------------------------*)
 
-type magic_counter = {fire: int; frost: int; arcane: int}
+type magic_counter = {fire: int; frost: int; arcane: int};;
 
 let rec update counter = function
 | Fire -> {counter with fire = counter.fire + 1}
 | Frost -> {counter with frost = counter.frost + 1}
-| Arcane -> {counter with arcane = counter.arcane + 1}
+| Arcane -> {counter with arcane = counter.arcane + 1};;
 
 
 (*----------------------------------------------------------------------------*]
@@ -213,21 +213,44 @@ let rec update counter = function
  - : magic_counter = {fire = 3; frost = 0; arcane = 0}
 [*----------------------------------------------------------------------------*)
 
-let rec count_magic = function
-| 
+let rec updatee count prof =
+   match prof.status with
+   | Newbie -> count
+   | Student (magic, _) -> update count magic
+   | Employee (magic, _) -> update count magic;;
+
+let rec count_magic list =
+   let rec cout' acc = function
+     | [] -> acc
+     | x :: xs -> cout' (updatee acc x) xs
+   in 
+   cout' {fire = 0; frost= 0; arcane = 0} list;; 
 
 (*----------------------------------------------------------------------------*]
- We wish to find a possible candidate for a job offer. A student can become a
- historian after studying for at least 3 years, a researcher after 4 years and
- a teacher after 5 years.
- The function [find_candidate magic specialisation wizard_list] searches
- through the list of wizards and returns the name of a suitable candidate for
- the [specialisation] if they are studying [magic]. If there is no candidate,
- it should return [None].
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # let jaina = {name = "Jaina"; status = Student (Frost, 4)};;
- # find_candidate Frost Researcher [professor; jaina];;
- - : string option = Some "Jaina"
+We wish to find a possible candidate for a job offer. A student can become a
+historian after studying for at least 3 years, a researcher after 4 years and
+a teacher after 5 years.
+The function [find_candidate magic specialisation wizard_list] searches
+through the list of wizards and returns the name of a suitable candidate for
+the [specialisation] if they are studying [magic]. If there is no candidate,
+it should return [None].
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# let jaina = {name = "Jaina"; status = Student (Frost, 4)};;
+# find_candidate Frost Researcher [professor; jaina];;
+- : string option = Some "Jaina"
 [*----------------------------------------------------------------------------*)
+let pravi i = function
+| Researcher when i > 3 -> true
+| Historian when i > 2 -> true
+| Teacher when i > 4 -> true
+| _ -> false
 
-let rec find_candidate = ()
+
+let rec find_candidate magic specialisation = function
+     | [] -> "js"
+     | x :: xs -> let rec aux job guy =
+        match guy.status, guy.name with 
+        | Student (magicc , i), x -> if magicc = magic && pravi i specialisation then x else find_candidate magic specialisation xs
+        | _ , _ -> find_candidate magic specialisation xs
+        in aux magic x
+
