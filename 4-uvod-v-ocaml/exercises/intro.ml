@@ -10,7 +10,12 @@
  - : int = 3
 [*----------------------------------------------------------------------------*)
 
-let rec penultimate_element = ()
+let rec penultimate_element = function
+  | [] -> failwith "kurac"
+  | x :: [] -> failwith "kurac"
+  | x :: y :: [] -> x
+  | x :: xs -> penultimate_element xs
+
 
 (*----------------------------------------------------------------------------*]
  The function [get k list] returns the [k]-th element in the list [list].
@@ -22,7 +27,9 @@ let rec penultimate_element = ()
  - : int = 1
 [*----------------------------------------------------------------------------*)
 
-let rec get = ()
+let rec get k = function
+  | [] -> failwith "kraateek"
+  | x :: xs -> if k = 0 then x else get (k - 1) xs
 
 (*----------------------------------------------------------------------------*]
  The function [double list] doubles the occurences of elements in the list.
@@ -31,7 +38,9 @@ let rec get = ()
  - : int list = [1; 1; 2; 2; 3; 3]
 [*----------------------------------------------------------------------------*)
 
-let rec double = ()
+let rec double = function
+  | [] -> []
+  | x :: xs -> x :: x :: double xs 
 
 (*----------------------------------------------------------------------------*]
  The function [divide k list] divides the list into a pair of lists. The first
@@ -45,7 +54,12 @@ let rec double = ()
  - : int list * int list = ([1; 2; 3; 4; 5], [])
 [*----------------------------------------------------------------------------*)
 
-let rec divide = ()
+let rec divide k list =
+  let rec aux acc1 acc2 = function
+    | [] -> (List.rev acc1, acc2)
+    | x :: xs -> if k = 0 then aux (x :: acc1) xs [] else aux (x :: acc1) acc2 xs
+    in
+    aux [] [] list
 
 (*----------------------------------------------------------------------------*]
  The function [delete k list] removes the [k]-th element of the list.
@@ -55,7 +69,9 @@ let rec divide = ()
  - : int list = [0; 0; 0; 0; 0]
 [*----------------------------------------------------------------------------*)
 
-let rec delete = ()
+let rec delete k = function
+  | [] -> []
+  | x :: xs -> if k = 0 then xs else x :: delete (k - 1) xs
 
 (*----------------------------------------------------------------------------*]
  The function [slice i k list] returns the sub-list of [list] from the [i]-th
@@ -65,7 +81,10 @@ let rec delete = ()
  - : int list = [1; 2; 3]
 [*----------------------------------------------------------------------------*)
 
-let rec slice = ()
+let rec slice i j = function
+  | [] -> []
+  | x :: xs when i = 0 -> if j = 0 then [x] else x :: slice i (j - 1) xs
+  | x :: xs -> slice (i - 1) (j - 1) xs 
 
 (*----------------------------------------------------------------------------*]
  The function [insert x k list] inserts (not replaces) [x] into the list at the
@@ -79,7 +98,9 @@ let rec slice = ()
  - : int list = [1; 0; 0; 0; 0; 0]
 [*----------------------------------------------------------------------------*)
 
-let rec insert = ()
+let rec insert k i = function
+  | [] -> [k]
+  | x :: xs as t -> if i = 0 then k :: t else x :: insert k (i - 1) xs
 
 (*----------------------------------------------------------------------------*]
  The function [rotate n list] rotates the list to the left by [n] places.
@@ -89,7 +110,9 @@ let rec insert = ()
  - : int list = [3; 4; 5; 1; 2]
 [*----------------------------------------------------------------------------*)
 
-let rec rotate = ()
+let rec rotate k = function
+  | [] -> []
+  | x :: xs as t -> if k = 0 then t else rotate (k - 1) (xs @ [x]) 
 
 (*----------------------------------------------------------------------------*]
  The function [remove x list] removes all occurrences of [x] in the list.
@@ -98,7 +121,9 @@ let rec rotate = ()
  - : int list = [2; 3; 2; 3]
 [*----------------------------------------------------------------------------*)
 
-let rec remove = ()
+let rec remove x = function
+  | [] -> []
+  | y :: xs -> if y = x then remove x xs else y :: remove x xs 
 
 (*----------------------------------------------------------------------------*]
  The function [is_palindrome] checks if a list is a palindrome.
@@ -110,7 +135,8 @@ let rec remove = ()
  - : bool = false
 [*----------------------------------------------------------------------------*)
 
-let rec is_palindrome = ()
+let rec is_palindrome list = 
+  List.rev list = list
 
 (*----------------------------------------------------------------------------*]
  The function [max_on_components] returns a list with the maximum element
@@ -121,7 +147,11 @@ let rec is_palindrome = ()
  - : int list = [5; 4; 3; 3; 4]
 [*----------------------------------------------------------------------------*)
 
-let rec max_on_components = ()
+let rec max_on_components list1 list2 =
+  match (list1, list2) with
+  | ([], list) -> []
+  | (list, []) -> []
+  | (x :: xs, y :: ys) -> if x > y then x :: (max_on_components xs ys) else y :: (max_on_components xs ys)
 
 (*----------------------------------------------------------------------------*]
  The function [second_largest] returns the second largest value in the list.
@@ -133,4 +163,10 @@ let rec max_on_components = ()
  - : int = 10
 [*----------------------------------------------------------------------------*)
 
-let rec second_largest = ()
+
+let rec second_largest list =
+  let rec aux = function
+  | [] -> failwith "ha"
+  | x :: [] -> x
+  | x :: xs -> max x (aux xs)
+  in aux (remove (aux list) list)

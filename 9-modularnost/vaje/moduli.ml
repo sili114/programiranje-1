@@ -49,13 +49,18 @@
 [*----------------------------------------------------------------------------*)
 
 module type NAT = sig
-  type t
+  type t 
 
   val eq   : t -> t -> bool
   val zero : t
+  val one : t
   (* Dodajte manjkajoče! *)
-  (* val to_int : t -> int *)
-  (* val of_int : int -> t *)
+  val to_int : t -> int
+  val of_int : int -> t
+  val plus : t -> t -> t
+  val minus : t -> t -> t
+  val krat : t -> t -> t
+
 end
 
 (*----------------------------------------------------------------------------*]
@@ -70,8 +75,14 @@ end
 module Nat_int : NAT = struct
 
   type t = int
-  let eq x y = failwith "later"
+  let eq x y = (x = y)
   let zero = 0
+  let one = 1
+  let plus x y = x + y
+  let minus x y = x - y
+  let krat x y = x * y
+  let to_int x = x  
+  let of_int x = x
   (* Dodajte manjkajoče! *)
 
 end
@@ -90,10 +101,41 @@ end
 
 module Nat_peano : NAT = struct
 
-  type t = unit (* To morate spremeniti! *)
-  let eq x y = failwith "later"
-  let zero = () (* To morate spremeniti! *)
-  (* Dodajte manjkajoče! *)
+  type t = 
+    | Zero
+    | Naslednik of t  
+  let zero = Zero 
+  let one = Naslednik zero
+  let rec to_int = function
+    | Zero -> 0
+    | Naslednik v -> 1 + to_int v
+  let rec of_int = function
+    | 0 -> Zero
+    | n -> Naslednik(of_int(n - 1))
+
+  let rec plus x = function
+    | Zero -> x
+    | Naslednik v -> plus (Naslednik x) v 
+
+  let rec eq x y =
+    match (x, y) with
+    | Zero , Zero -> true
+    | Naslednik v, Naslednik u -> eq v u
+    | _ , _ -> false
+  
+  
+  let rec minus x y =
+    match (x, y) with
+    | x, Zero -> x
+    | Zero, Naslednik v -> assert false
+    | Naslednik v, Naslednik u -> minus v u
+
+  let rec krat x = function
+    | Zero -> Zero
+    | one -> x
+    | Naslednik v -> plus x (krat x v)
+    
+
 
 end
 
@@ -118,7 +160,11 @@ end
  - : int = 4950
 [*----------------------------------------------------------------------------*)
 
-let sum_nat_100 (module Nat : NAT) = ()
+let sum_nat_100 (module Nat : NAT) = 
+  let rec sum_to y sum = function
+    | x -> if Nat.eq y x then Nat.to_int (Nat.plus x sum) else sum_to y (Nat.plus sum x) (Nat.plus x Nat.one)
+    in sum_to (Nat.of_int 100) (Nat.zero) (Nat.zero)
+      
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  Now we follow the fable told by John Reynolds in the introduction.
@@ -133,6 +179,13 @@ let sum_nat_100 (module Nat : NAT) = ()
 module type COMPLEX = sig
   type t
   val eq : t -> t -> bool
+  val one : t
+  val zero : t
+  val im : t
+  val neg : t -> t
+  val kon : t -> t
+  val plus : t -> t -> t
+  val krat : t -> t -> t
   (* Dodajte manjkajoče! *)
 end
 

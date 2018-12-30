@@ -8,7 +8,9 @@
  # let l = randlist 10 10 ;;
  val l : int list = [0; 1; 0; 4; 0; 9; 1; 2; 5; 4]
 [*----------------------------------------------------------------------------*)
-
+let rec randlist max = function
+| 0 -> []
+| n -> (Random.int max) :: randlist max (n - 1)
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  We can now use [randlist] to test our sorting functions (named [our_sort] in
@@ -35,23 +37,53 @@
  - : int list = [7]
 [*----------------------------------------------------------------------------*)
 
+let rec insert y = function
+| [] -> [y]
+| x :: xs as t -> if y > x then x :: insert y xs else x :: t
 
 (*----------------------------------------------------------------------------*]
  The empty list is sorted. The function [insertion_sort] sorts a list by
  consecutively inserting all of its elements into the empty list.
 [*----------------------------------------------------------------------------*)
 
-
+let rec insertion_sort list =
+  let rec aux acc = function
+  | [] -> acc
+  | x :: xs -> aux (insert x acc) xs
+  in aux [] list
 
 (*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*]
  Selection Sort
 [*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*)
+
 
 (*----------------------------------------------------------------------------*]
  The function [min_and_rest list] returns a pair [Some (z, list')] such that [z]
  is the smallest element in [list] and [list'] is equal to [list] with the
  first occurance of [z] removed. If the list is empty it returns [None].
 [*----------------------------------------------------------------------------*)
+
+
+let rec remove x = function
+  | [] -> []
+  | y :: xs -> if x = y then xs else y :: remove x xs
+let rec smallest list =
+  match list with
+  | [] -> 0
+  | x :: xs as t->
+      let rec aux y = function 
+        | [] -> y
+        | x :: xs -> if x < y then aux x xs else aux y xs
+        in aux x t
+
+let rec min_and_rest = function
+  | [] -> None
+  | x :: xs as t -> let x = smallest t
+  in Some (x , remove x t)
+             
+                   
+
+                    
 
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
@@ -72,6 +104,12 @@
  Hint: Use [min_and_rest] from the previous exercise.
 [*----------------------------------------------------------------------------*)
 
+let rec selection_sort list = 
+  let rec aux acc = function
+  | None -> acc
+  | Some(x, []) -> List.rev (x :: acc)
+  | Some (x, y)  -> aux (x :: acc) (min_and_rest y)
+  in aux [] (min_and_rest list) 
 
 
 (*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*]
@@ -101,6 +139,12 @@
  - : int array = [|0; 4; 2; 3; 1|]
 [*----------------------------------------------------------------------------*)
 
+let swap tabela i j =
+  let t = tabela.(i) in
+    tabela.(i) <- tabela.(j);
+    tabela.(j) <- t
+
+
 
 (*----------------------------------------------------------------------------*]
  The function [index_min a lower upper] computes the index of the smallest
@@ -109,6 +153,14 @@
  index_min [|0; 2; 9; 3; 6|] 2 4 = 4
 [*----------------------------------------------------------------------------*)
 
+let index_min a lower upper =
+  let min = ref lower in 
+  for i = lower to upper do
+    if a.(i) < a.(!min) then
+      min := i 
+  done;
+  !min 
+   
 
 (*----------------------------------------------------------------------------*]
  The function [selection_sort_array] implements in-place selection sort.
